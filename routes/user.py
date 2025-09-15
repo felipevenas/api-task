@@ -1,62 +1,46 @@
-from fastapi import APIRouter
-from bson import ObjectId
-from config.database import connection
-from models.user import User
-from schemas.user import userEntity, listUserEntity
+from fastapi import APIRouter, Depends, HTTPException, status
+from config.database import get_db
+from sqlalchemy.orm import Session
+from schemas.user import CreateUser, ResponseUser
+from services.user import UserService
+from repositories.user import UserRepository
 
 user_router = APIRouter()
 
-@user_router.get('/')
-async def start():
-    return "API foi inicializada!"
-
-# Listar todos os usuários:
-@user_router.get('/user')
-async def list_users():
-    return listUserEntity(connection.local.user.find())
-
-# Buscar um usuário por ID:
-@user_router.get('/user/{id_user}')
-async def find_by_id(id_user: str):
-    user = connection.local.user.find_one({"_id": ObjectId(id_user)}) # "'_id' é a informação que está salva no banco."
-    if user:
-        print("✅ Usuário encontrado!")
-        return {"Info:": "Usuário encontrado!"}, userEntity(user)
-    return {"Erro:": "Nenhuma informação encontrada."}
+def get_user_service(db: Session = Depends(get_db)):
+    repository = UserRepository(db)
+    return UserService(repository)
 
 # Inserir novo usuário:
-@user_router.post('/user')
-async def create_user(user: User):
-    connection.local.user.insert_one(dict(user))
-    print("✅ Usuário criado!")
-    return listUserEntity(connection.local.user.find())
+@user_router.post('/user', response_model=ResponseUser)
+def create_user(user: CreateUser, service: UserService = Depends(get_user_service)):
+    return service.create_user(user)
 
-# Atualizar um usuário pelo ID:
-@user_router.put('/user/{id_user}')
-async def update_user(id_user: str, user: User):
-    connection.local.user.find_one_and_update(
-        {"_id": ObjectId(id_user)}, # Busca o objeto pelo ID.
-        {"$set": dict(user)} # Seta os novos valores em formato de dicionário.
-    )
-    print("✅ Usuário atualizado!")
-    return {"Info:": "Usuário atualizado!"}, userEntity(
-        connection.local.user.find_one({"_id": ObjectId(id_user)})
-    )    
+# Buscar todos os usuários:
+@user_router.get('/users', response_model=list[ResponseUser])
+def find_all(service: UserService = Depends(get_user_service)):
+    return service.find_all()
 
-# Deletar um usuário:
-@user_router.delete('/user/{id_user}')
-async def delete_user(id_user: str):
-    user = connection.local.user.find_one_and_delete({"_id": ObjectId(id_user)})
-    if user:
-        print("✅ Usuário deletado!")
-        return {"Info:": "Usuário deletado!"}, userEntity(user)
-    return {"Erro:": "Nenhum usuário encontrado!"}
+# Buscar usuário por ID:
+@user_router.get('/user/{user_id}', response_model=ResponseUser)
+def find_by_id(user_id: int, service: UserService = Depends(get_user_service)):
+    user = service.find_by_id(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+    return user
 
-# Adicionar uma tarefa ao usuário:
-@user_router.post("/user/{id_user}/task")
-async def add_task(id_user: str, task: dict):
-    connection.local.user.update_one(
-        {"_id": ObjectId(id_user)},
-        {"$push": {"tasks": task}}  # Adiciona nova task na lista do usuário.
-    )
-    return {"Info:": "Task adicionada com sucesso!"}
+# Alterar dados de usuário:
+@user_router.put('/user/{user_id}', response_model=ResponseUser)
+def update(user: CreateUser, user_id: int, service: UserService = Depends(get_user_service)):
+    user = service.update(user_id, user)
+    if not user:
+        raise HTTPException(status_code=404, detail="Nenhum usuário foi encontrado!")
+    return user
+
+# Deletar usuários por ID:
+@user_router.delete('/user/{user_id}', response_model=ResponseUser)
+def delete(user_id: int, service: UserService = Depends(get_user_service)):
+    user = service.delete(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+    return user
