@@ -4,7 +4,8 @@ def userEntity(db_item) -> dict:
         "name": str(db_item['name']),
         "age": int(db_item['age']),
         "email": str(db_item['email']),
-        "tel": int(db_item['tel'])
+        "tel": int(db_item['tel']),
+        "tasks": list(db_item['tasks'])
     }
 
 def listUserEntity(db_item_list) -> list:
