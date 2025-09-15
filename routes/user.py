@@ -51,3 +51,12 @@ async def delete_user(id_user: str):
         print("✅ Usuário deletado!")
         return {"Info:": "Usuário deletado!"}, userEntity(user)
     return {"Erro:": "Nenhum usuário encontrado!"}
+
+# Adicionar uma tarefa ao usuário:
+@user_router.post("/user/{id_user}/task")
+async def add_task(id_user: str, task: dict):
+    connection.local.user.update_one(
+        {"_id": ObjectId(id_user)},
+        {"$push": {"tasks": task}}  # Adiciona nova task na lista do usuário.
+    )
+    return {"Info:": "Task adicionada com sucesso!"}
