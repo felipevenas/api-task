@@ -16,7 +16,11 @@ DATABASE_URL = f"mysql+pymysql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAM
 engine = create_engine(DATABASE_URL)
 SessionLocal = sessionmaker(autoflush=False, autocommit=False, bind=engine)
 
+<<<<<<< HEAD
 # Ponto de partida para todos os modelos (Enti  dades precisam herdar esse gerador de modelos).
+=======
+# Ponto de partida para todos os modelos (Entdidades precisam herdar esse gerador de modelos).
+>>>>>>> cb0e5b90397ae64b2c927d15119aa22885b9f4c8
 Base = declarative_base()
 
 def get_db():
