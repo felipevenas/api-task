@@ -7,7 +7,7 @@ class UserService:
         self.repository = repository
 
     def create_user(self, user: CreateUser):
-        return self.repository.create_user(user)
+        return self.repository.create(user)
     
     def find_all(self):
         return self.repository.find_all()
