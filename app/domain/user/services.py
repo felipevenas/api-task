@@ -20,3 +20,6 @@ class UserService:
     
     def delete(self, user_id: int):
         return self.repository.delete(user_id)
+
+    def authenticate_user(self, login: str, senha: str):
+        return self.repository.verify_user(login, senha)

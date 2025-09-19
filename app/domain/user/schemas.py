@@ -18,6 +18,7 @@ class ResponseUser(BaseModel):
     nome: str
     email:str
     login: str
+    senha: str
     telefone: str
     grupo: str
     cargo: str
@@ -26,3 +27,11 @@ class ResponseUser(BaseModel):
 
     class Config:
         from_attributes = True
+
+class AuthResponseUser(BaseModel):
+    login: str
+    senha: str
+
+    class Config:
+        from_attributes = True
+    

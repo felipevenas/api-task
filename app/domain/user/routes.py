@@ -2,7 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException, status
 from app.db.database import get_db
 from app.domain.user.repository import UserRepository
 from app.domain.user.services import UserService
-from app.domain.user.schemas import CreateUser, ResponseUser
+from app.domain.user.schemas import CreateUser, ResponseUser, AuthResponseUser
 from sqlalchemy.orm import Session
 
 user_router = APIRouter()
@@ -41,6 +41,13 @@ def update(user: CreateUser, user_id: int, service: UserService = Depends(get_us
 @user_router.delete('/user/{user_id}', response_model=ResponseUser)
 def delete(user_id: int, service: UserService = Depends(get_user_service)):
     user = service.delete(user_id)
+    if not user:
+        raise HTTPException(status_code=404, detail="Usuário não encontrado!")
+    return user
+
+@user_router.get('/user/login/', response_model=AuthResponseUser)
+def auth(login: str, senha: str, service: UserService = Depends(get_user_service)):
+    user = service.authenticate_user(login, senha)
     if not user:
         raise HTTPException(status_code=404, detail="Usuário não encontrado!")
     return user
