@@ -38,3 +38,11 @@ class UserRepository:
         self.db.commit()
         return db_user
     
+    def verify_user(self, login: str, senha: str):
+        user = self.db.query(User).filter(User.login == login).first()
+
+        if user:
+            if user.senha == senha:
+                return user
+            else:
+                return False
