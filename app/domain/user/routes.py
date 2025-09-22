@@ -45,7 +45,7 @@ def delete(user_id: int, service: UserService = Depends(get_user_service)):
         raise HTTPException(status_code=404, detail="Usuário não encontrado!")
     return user
 
-@user_router.get('/user/login/', response_model=AuthResponseUser)
+@user_router.post('/user/login/', response_model=AuthResponseUser)
 def auth(login: str, senha: str, service: UserService = Depends(get_user_service)):
     user = service.authenticate_user(login, senha)
     if not user:

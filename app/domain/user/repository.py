@@ -7,13 +7,6 @@ class UserRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, user: CreateUser) -> User:
-        db_user = User(**user.dict())
-        self.db.add(db_user)
-        self.db.commit()
-        self.db.refresh(db_user)
-        return db_user
-    
     def find_all(self):
         return self.db.query(User).all()
     
@@ -36,6 +29,13 @@ class UserRepository:
             return None
         self.db.delete(db_user)
         self.db.commit()
+        return db_user
+    
+    def create(self, user: CreateUser) -> User:
+        db_user = User(**user.dict())
+        self.db.add(db_user)
+        self.db.commit()
+        self.db.refresh(db_user)
         return db_user
     
     def verify_user(self, login: str, senha: str):
