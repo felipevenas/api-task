@@ -1,6 +1,7 @@
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 from app.db.database import get_db
+from app.domain.user.model import User
 from app.domain.task.repository import TaskRepository
 from app.domain.task.schemas import CreateTask, ResponseTask
 from app.domain.task.services import TaskService
@@ -13,7 +14,8 @@ def get_task_service(db: Session = Depends(get_db)):
 
 # Inserir novo usuário:
 @task_router.post('/task', response_model=ResponseTask)
-def create_task(task: CreateTask, service: TaskService = Depends(get_task_service)):
+def create_task(task: CreateTask, 
+                service: TaskService = Depends(get_task_service)):
     return service.create_task(task)
 
 # Buscar todos os usuários:
