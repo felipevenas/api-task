@@ -6,11 +6,7 @@ def setup_cors(app: FastAPI):
     origins = [
     "http://127.0.0.1:5000",
     "http://127.0.0.1:5000/register",
-<<<<<<< HEAD
-    "http://127.0.0.1:5000/auth",
-=======
-    "http://127.0.0.1:5000/login",
->>>>>>> a16d0600c0996d352d28f4b098ccd9b055ee64f3
+    "http://127.0.0.1:5000/auth"
     ]
 
     app.add_middleware(
