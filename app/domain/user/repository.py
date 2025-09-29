@@ -1,4 +1,4 @@
-from app.domain.user.schemas import CreateUser
+from app.domain.auth.schemas import RegisterRequest, LoginRequest
 from app.domain.user.model import User
 from sqlalchemy.orm import Session
 
@@ -7,20 +7,13 @@ class UserRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create(self, user: CreateUser) -> User:
-        db_user = User(**user.dict())
-        self.db.add(db_user)
-        self.db.commit()
-        self.db.refresh(db_user)
-        return db_user
-    
     def find_all(self):
         return self.db.query(User).all()
     
     def find_by_id(self, user_id: int):
         return self.db.query(User).filter(User.id == user_id).first()
     
-    def update(self, user_id: int, user: CreateUser) -> User:
+    def update(self, user_id: int, user: RegisterRequest) -> User:
         db_user = self.find_by_id(user_id)
         if not db_user:
             return None
@@ -38,3 +31,17 @@ class UserRepository:
         self.db.commit()
         return db_user
     
+    def create(self, user: RegisterRequest) -> User:
+        db_user = User(**user.model_dump())
+        self.db.add(db_user)
+        self.db.commit()
+        return db_user
+    
+    def verify_user(self, credentials: LoginRequest):
+        user = self.db.query(User).filter(User.login == credentials.login).first()
+
+        if user:
+            if user.senha == credentials.senha:
+                return user
+            else:
+                return False
