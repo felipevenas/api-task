@@ -6,7 +6,8 @@ def setup_cors(app: FastAPI):
     origins = [
     "http://127.0.0.1:5000",
     "http://127.0.0.1:5000/register",
-    "http://127.0.0.1:5000/auth"
+    "http://127.0.0.1:5000/auth",
+    "http://127.0.0.1:5000/task"
     ]
 
     app.add_middleware(
