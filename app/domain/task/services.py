@@ -20,3 +20,6 @@ class TaskService:
     
     def delete(self, task_id: int):
         return self.repository.delete(task_id)
+    
+    def find_by_user(self, user_id: int):
+        return self.repository.find_by_user(user_id)

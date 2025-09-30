@@ -1,5 +1,7 @@
 from app.domain.task.schemas import CreateTask
 from app.domain.task.model import Task
+from app.domain.user.model import User
+
 from sqlalchemy.orm import Session
 
 # Constutor do UserRepository:
@@ -7,8 +9,8 @@ class TaskRepository:
     def __init__(self, db: Session):
         self.db = db
 
-    def create_task(self, user: CreateTask) -> Task:
-        db_task = Task(**user.model_dump())
+    def create_task(self, task: CreateTask) -> Task:
+        db_task = Task(**task.model_dump())
         self.db.add(db_task)
         self.db.commit()
         self.db.refresh(db_task)
@@ -38,4 +40,6 @@ class TaskRepository:
         self.db.commit()
         return db_task
     
-    
+    def find_by_user(self, user_id: int):
+        tasks = self.db.query(Task).filter(Task.user_id == user_id).all()
+        return tasks
