@@ -7,9 +7,8 @@ class Task(Base):
     __tablename__ = "tasks"
 
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
-    title = Column(String(100))
-    description = Column(String(200))
-    checkbox = Column(Boolean, default=False)
+    titulo = Column(String(100))
+    descricao = Column(String(100))
 
     # Chave estrangeira que aponta para User.ID:
     user_id = Column(Integer, ForeignKey("users.id"))

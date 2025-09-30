@@ -20,3 +20,6 @@ class UserService:
     
     def delete(self, user_id: int):
         return self.repository.delete(user_id)
+    
+    def find_by_login(self, login: str):
+        return self.repository.find_by_login(login)

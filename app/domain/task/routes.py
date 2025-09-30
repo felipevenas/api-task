@@ -14,14 +14,20 @@ def get_task_service(db: Session = Depends(get_db)):
 
 # Inserir novo usuário:
 @task_router.post('/task', response_model=ResponseTask)
-def create_task(task: CreateTask, 
-                service: TaskService = Depends(get_task_service)):
+def create_task(task: CreateTask, service: TaskService = Depends(get_task_service)):
     return service.create_task(task)
 
 # Buscar todos os usuários:
 @task_router.get('/tasks', response_model=list[ResponseTask])
 def find_all(service: TaskService = Depends(get_task_service)):
     return service.find_all()
+
+@task_router.get('/tasks/user/{user_id}', response_model=list[ResponseTask])
+def find_by_user(user_id: int, service: TaskService = Depends(get_task_service)):
+    tasks = service.find_by_user(user_id)
+    if not tasks:
+        raise HTTPException(status_code=404, detail="Tarefas não encontradas!")
+    return tasks
 
 # Buscar usuário por ID:
 @task_router.get('/task/{task_id}', response_model=ResponseTask)
@@ -42,7 +48,7 @@ def update(task: CreateTask, task_id: int, service: TaskService = Depends(get_ta
 # Deletar usuários por ID:
 @task_router.delete('/task/{task_id}', response_model=ResponseTask)
 def delete(task_id: int, service: TaskService = Depends(get_task_service)):
-    user = service.delete(task_id)
-    if not user:
-        raise HTTPException(status_code=404, detail="Tarefa não encontradas!")
-    return user
+    task = service.delete(task_id)
+    if not task:
+        raise HTTPException(status_code=404, detail="Tarefa não encontrada!")
+    return task

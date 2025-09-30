@@ -3,7 +3,7 @@ from app.db.database import get_db
 from app.domain.user.repository import UserRepository
 from app.domain.user.services import UserService
 from app.domain.auth.services import AuthService
-from app.domain.user.schemas import ResponseUser
+from app.domain.user.schemas import ResponseUser, ResponseUserLogin
 from app.domain.auth.schemas import RegisterRequest, LoginRequest
 from sqlalchemy.orm import Session
 
@@ -51,7 +51,7 @@ def delete(user_id: int, service: UserService = Depends(get_user_service)):
         raise HTTPException(status_code=404, detail="Usuário não encontrado!")
     return user
 
-@user_router.post('/auth', response_model=LoginRequest)
+@user_router.post('/auth', response_model=ResponseUserLogin)
 def auth(credentials: LoginRequest, service: AuthService = Depends(get_auth_service)):
     user = service.authenticate(credentials)
     if not user:

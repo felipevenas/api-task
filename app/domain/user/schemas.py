@@ -15,4 +15,10 @@ class ResponseUser(BaseModel):
 
     class Config:
         from_attributes = True
-    
+
+class ResponseUserLogin(BaseModel):
+    id: int
+    login: str
+    senha: str
+
+
