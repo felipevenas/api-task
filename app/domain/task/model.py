@@ -9,6 +9,7 @@ class Task(Base):
     id = Column(Integer, primary_key=True, autoincrement=True, index=True)
     titulo = Column(String(100))
     descricao = Column(String(100))
+    status = Column(String(30))
 
     # Chave estrangeira que aponta para User.ID:
     user_id = Column(Integer, ForeignKey("users.id"))

@@ -1,5 +1,5 @@
 from app.domain.task.repository import TaskRepository
-from app.domain.task.schemas import CreateTask
+from app.domain.task.schemas import CreateTask, DoneTask
 
 # Constutor do UserService
 class TaskService:
@@ -14,7 +14,10 @@ class TaskService:
     
     def find_by_id(self, task_id: int):
         return self.repository.find_by_id(task_id)
-        
+
+    def update_status(self, task_id: int, status: str):
+        return self.repository.update_status(task_id, status)
+
     def update(self, task_id: int, task: CreateTask):
         return self.repository.update(task_id, task)
     

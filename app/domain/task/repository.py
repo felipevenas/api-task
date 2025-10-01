@@ -1,6 +1,5 @@
 from app.domain.task.schemas import CreateTask
 from app.domain.task.model import Task
-from app.domain.user.model import User
 
 from sqlalchemy.orm import Session
 
@@ -21,7 +20,15 @@ class TaskRepository:
     
     def find_by_id(self, task_id: int):
         return self.db.query(Task).filter(Task.id == task_id).first()
-    
+
+    def update_status(self, task_id: int, status: str) -> Task | None:
+        db_task = self.find_by_id(task_id)
+        if db_task:
+            db_task.status = status
+            self.db.commit()
+            self.db.refresh(db_task)
+            return db_task
+
     def update(self, task_id: int, task: CreateTask) -> Task:
         db_task = self.find_by_id(task_id)
         if not db_task:
