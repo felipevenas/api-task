@@ -52,8 +52,7 @@ def update_status(task_id: int, service: TaskService = Depends(get_task_service)
         raise HTTPException(status_code=404, detail='Tarefa não encontrada!')
     return task
 
-# Deletar usuários por ID:
-@task_router.delete('/delete/{task_id}', response_model=ResponseTask)
+@task_router.delete('/task/{task_id}', response_model=ResponseTask)
 def delete(task_id: int, service: TaskService = Depends(get_task_service)):
     task = service.delete(task_id)
     if not task:
